@@ -1,0 +1,355 @@
+---
+title: "A new pipeline to explore structural similarity across metabolite modules"
+author: |
+  | Ebtesam Abdel-Shafy, Tadele Melak, David A. MacIntyre, 
+  | Giorgia Zadra, Luiz F. Zerbini, Silvano Piazza, and Stefano Cacciatore
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    highlight: null
+    number_sections: no
+    fig_caption: yes
+  word_document: default
+vignette: |
+  %\VignetteIndexEntry{A simple pipeline to explore structural similarities between metabolites}   
+  %\VignetteKeywords{MetChem} 
+  %\VignettePackage{MetChem} 
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr} 
+---
+
+
+
+## 1  Introduction
+
+MetChem is an R package used to perform structural and functional analysis of metabolites using a simple pipeline.  
+
+ 
+## 2	Installation
+
+### 2.1 Installation via CRAN
+
+The R package MetChem (current version 0.1) is part of the Comprehensive R Archive Network (CRAN)^[https://cran.r-project.org/]. The simplest way to install the package is to enter the following command into your R session: `install.packages("MetChem")`. We suggest installing the following R packages: `pheatmap` and `RColorBrewer` to enable data visualization in heatmaps, `readxl` for the data reading of Excel files, and `impute` for the imputation of missing data.
+
+    # To install the pheatmap package
+    install.packages("pheatmap")
+    
+    # To install the RColorBrewer package
+    install.packages("RColorBrewer")
+    
+    # To install the readxl package
+    install.packages("readxl")
+
+    # To install the impute package
+    if (!require("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+    BiocManager::install("impute")
+
+### 2.2 Manual installation from source
+
+The package can be manually installed from source by opening the package's page in CRAN and then proceeding as follows:
+
+- Download MetChem.tar.gz and save it to your hard disk
+- Open a shell/terminal/command prompt window and change to the desired directory for installation of MetChem.tar.gz. Enter `R CMD INSTALL MetChem.tar.gz` to install the package.
+Note that this may require additional software on some platforms. Windows requires Rtools^[https://developer.apple.com/xcode/] to be installed and to be available in the default search path (environment variable PATH). MAC OS X requires installation of Xcode developers and command line tools.
+
+
+### 2.3 Compatibility issues
+
+The package downloadable from CRAN was built using R version, R.4.2.1. The package should work without major issues on R versions > 3.5.0.
+
+## 3  Getting Started 
+
+The R package MetChem depends by the R package rcdk, which is partially implemented in Java. In Windows environment, we reported an issue related to the uploading of rcdk package. It can be solved running the following code before loading the package MetChem.
+
+    replacement <- function(category = "LC_ALL") {
+      if (identical(category, "LC_MESSAGES"))
+        return("")
+      category <- match(category, .LC.categories)
+      if (is.na(category)) 
+        stop("invalid 'category' argument")
+      .Internal(Sys.getlocale(category))
+  
+    }
+    base <- asNamespace("base")
+    environment(replacement) <- base
+    unlockBinding("Sys.getlocale", base)
+    assign("Sys.getlocale", replacement, envir = base)
+    lockBinding("Sys.getlocale", base)
+
+To load the package, enter the following command in your R session:
+
+
+    library("MetChem")
+
+
+If this command terminates without any error messages, the package is installed successfully. The MetChem package is now ready for use.
+
+The package includes both a user manual (this document) and a reference manual (help pages for each function). To view the user manual, enter `vignette("MetChem")`. Help pages can be viewed using the command `help(package="MetChem")`.
+
+ \newpage
+ 
+## 4  Example: murine prostate tissues metabolic profile 
+
+Here, we introduce an example for the analysis of metabolic structural information using MetChem package. For this, we used a data set of mass spectrometry dataset obtained from murine prostate tissue samples reported by Labbé and Zadra \emph{et al.} (2019) (Supplementary Data 2). The metabolic data are obtained from ventral prostate tissues of mice that overexpress a human c-MYC transgene (MYC) in the prostate epithelium and wild-type littermates (WT). Mice were fed either a high fat diet (HFD; 60% kcal from fat; lard—rich in saturated fat) or a control diet (CTD; 10% kcal from fat). The data set includes six replicates for each group (\emph{i.e.}, WT_CTD, MYC_CTD, WT_HFD, and MYC_HFD). To begin, download the data from the Labbé and Zadra (2019) study. Download it and save it to your hard disk.
+Metabolomic data is extracted using the instructions below. Data is then imputed using a k-nearest neighbour (kNN) algorithm using the function `impute` as described in the publication.
+
+    require("readxl")
+    require("impute")
+    d=as.data.frame(read_excel("41467_2019_12298_MOESM5_ESM.xlsx",skip = 3))
+    d=d[1:414,]
+    rownames(d)=d[,"Metabolite"]
+    met=d[,4:27]
+    label=rep(c("WT_CTD","MYC_CTD","WT_HFD","MYC_HFD"),each=6)
+    label_MYC=rep(c("WT","MYC","WT","MYC"),each=6)
+    colnames(met)=paste(label,1:6)
+    met=data.matrix(met)
+    met=impute.knn(met,k=5)$data
+ 
+
+ 
+Heatmap visualization is generated using the function `pheatmap`. Metabolites are hierarchically clustered according to their relative concentration The hierarchical clustering is performed using the distance matrix based on the KODAMA scores. KODAMA is a learning algorithm for unsupervised feature extraction specifically designed for analyzing noisy and high-dimensional data sets (Cacciatore \emph{et al.}, 2014), implemented in the R package `KODAMA` (Cacciatore \emph{et al.}, 2017).
+
+
+    require("pheatmap")
+    require("RColorBrewer")
+
+    my_colour1 = list(genotype=c(MYC="#000000ff",WT="#eeeeeeff"),
+                      group=c(MYC_CTD="#373898ff",MYC_HFD="#c11630ff",
+                              WT_CTD="#00a4cfff",WT_HFD="#e40a81ff"))
+
+    set.seed(1)
+    kk1=KODAMA.matrix(t(met))
+    col=KODAMA.visualization(kk1)
+    hcol=hclust(dist(col),method="ward.D")
+
+    kk2=KODAMA.matrix(scale(met))
+    row=KODAMA.visualization(kk2)
+    hrow=hclust(dist(row),method="ward.D")
+    my_sample_col <- data.frame(group = label,genotype=label_MYC)
+    row.names(my_sample_col) <- colnames(met)
+
+    pheatmap(met,
+             cluster_cols = hcol,
+             cluster_rows = hrow,
+             labels_row = rep("",nrow(met)),
+             annotation_col = my_sample_col, 
+             annotation_colors = my_colour1,
+             color = colorRampPalette(rev(brewer.pal(n = 11, name ="RdBu")))(100))
+ 
+\begin{figure}[h]
+  \centerline{\includegraphics[width=12cm]{KODAMApaper.pdf}}
+  \caption{Heatmap of metabolites with hierarchical clustering based on their concentratrion.}
+  \label{fig:F1}
+\end{figure}
+
+  \newpage
+ 
+To analyze the chemical similarities among metabolites, we need the Simplified Molecular-Input Line-Entry System (SMILES) of each metabolite is obtained. The SMILES of the previous data set is stored in the list `HFD` that can be loaded using the function `data(HFD)`. `MetChem` package includes the `modules.detection` function based on KODAMA analysis.  This function repeats the follwing steps (10 times as default): i) transformation of the chemical structure dissimilarity matrix in a multidimensional space (with 50 dimensions as defaults) using multidimensional scaling. ii) KODAMA features extraction from the multidimensional space. iii) hierarchical clustering based on the KODAMA output. iv) Calculation of the silhoutte index from different number of clusters (from 2 to 30 as default).
+The average of the siloutte index is calculated for each cluster numbers to identiy the optimal cluster number.
+
+
+    data(HFD)
+    met=met[rownames(HFD),]
+    clu=modules.detection(HFD$SMILES)
+    plot(clu$min_nc:clu$max_nc,clu$silhouette,type="l",
+         ylab="Rousseeuw's Silhouette index",xlab="Number of clusters")
+    abline(v=5*(1:6),lty=2)
+
+\begin{figure}[h]
+  \centerline{\includegraphics[width=8cm]{FLindex.pdf}}
+  \caption{Silhouette index.}
+  \label{fig:F2}
+\end{figure}
+
+ \newpage
+
+Based on the average Silhouette indeces, we have the optimal number of cluster for this dataset is 7. Below is shown a graphical visualization of the final output of KODAMA. Each cluster is represented by a different color code. Each dot represents a different metabolite. Metabolites that are located near to each other share a similar chemical structure.
+
+    plot(clu$visualization,pch=21,bg=rainbow(7,alpha = 0.7)[clu$clusters[,"Clusters 7"]],cex=2)
+
+\begin{figure}[h]
+  \centerline{\includegraphics[width=12cm]{KODAMA.pdf}}
+  \caption{KODAMA plot.}
+  \label{fig:F3}
+\end{figure}
+
+\newpage
+
+A new heatmap is generated where metabolites are clustered according to their chemical similarity.
+
+    my_colour2 = list(cluster = c("1"=rainbow(7,alpha = 1)[1],
+                                  "2"=rainbow(7,alpha = 1)[2],
+                                  "3"=rainbow(7,alpha = 1)[3],
+                                  "4"=rainbow(7,alpha = 1)[4],
+                                  "5"=rainbow(7,alpha = 1)[5],
+                                  "6"=rainbow(7,alpha = 1)[6],
+                                  "7"=rainbow(7,alpha = 1)[7],,
+                      genotype=c(MYC="#000000ff",WT="#eeeeeeff"),
+                      group=c(MYC_CTD="#373898ff",MYC_HFD="#c11630ff",
+                              WT_CTD="#00a4cfff",WT_HFD="#e40a81ff"))
+
+    clusters7=clu$clusters[,"Clusters 7"]
+    my_sample_row <- data.frame(cluster = as.character(clusters7))
+    row.names(my_sample_row) <- rownames(met)
+
+    set.seed(1)
+    met=met[rownames(HFD),] 
+    kk1=KODAMA.matrix(t(met))
+    col=KODAMA.visualization(kk1)
+    hcol=hclust(dist(col),method="ward.D")
+    hrow=clu$hclust
+
+    my_sample_col <- data.frame(group = label,genotype=label_MYC)
+    row.names(my_sample_col) <- colnames(met)
+
+    pheatmap(met,
+             cluster_cols = hcol,
+             cluster_rows = hrow,
+             labels_row = rep("",nrow(met)), 
+             annotation_colors = my_colour2,
+             annotation_col = my_sample_col, 
+             annotation_row = my_sample_row, 
+             cutree_rows = 7, 
+             color = colorRampPalette(rev(brewer.pal(n = 11, name ="RdBu")))(100))
+
+\begin{figure}[h]
+  \centerline{\includegraphics[width=12cm]{heatmap.pdf}}
+  \caption{Heatmap of metabolites with vertical hierarchical clustering based on their molecular structure.}
+  \label{fig:F4}
+\end{figure}
+
+ \newpage
+
+In the next step, we apply the Weighted Metabolite Chemical Similarity Analysis (WMCSA). WMCSA is implemented in the function `WMCSA`. This function summarizes the relative concentration of metabolites within each module (a.k.a., cluster). Each module is defined according to the chemical similarity. 
+
+    set.seed(1)
+    my_sample_col <- data.frame(group = label,genotype=label_MYC)
+    row.names(my_sample_col) <- colnames(met)
+    ww=WMCSA(met,clu,7)
+
+    kk1=KODAMA.matrix(t(ww))
+    col=KODAMA.visualization(kk1)
+    hcol=hclust(dist(col),method="ward.D")
+
+    hrow=hclust(dist(ww),method="ward.D")
+
+    pheatmap(ww,
+             cluster_cols = hcol,
+             cluster_rows = hrow,
+             annotation_col = my_sample_col, 
+             annotation_colors = my_colour1,
+             color = colorRampPalette(rev(brewer.pal(n = 11, name ="RdBu")))(100))
+
+\begin{figure}[h]
+  \centerline{\includegraphics[width=12cm]{KODAMAall.pdf}}
+  \caption{Heatmap of the output of WMCSA.}
+  \label{fig:F5}
+\end{figure}
+
+ \newpage
+
+
+Differential analysis of the relevant modules can be performed using the function `multi_analysis` present in the R
+package `KODAMA`. In the example below, we perform a differential analysis between MYC transgenic mice fed with high-fat diet or control diet named as MYC_HFD and MYC_CTD, respectively.
+
+
+    multi_analysis(t(ww),label_MYC)
+   
+
+```{r, echo=FALSE, results='asis'}
+Feature=c(
+ "Cluster1, median [IQR]", "Cluster2, median [IQR]",  "Cluster3, median [IQR]",  "Cluster4, median [IQR]" , "Cluster5, median [IQR]" , "Cluster6, median [IQR]", 
+ "Cluster7, median [IQR]")
+
+MYC=c(  "4.15 [2.003 6.629]"  ,"-2.57 [-4.056 -1.642]","3.82 [1.703 5.572]", "-3.325 [-5.853 -1.232]","3.54 [2.873 4.312]",     "3.708 [3.185 4.399]"  ,  "4.353 [3.232 5.841]" )
+
+WT=c("-4.379 [-6.376 -2.853]","2.423 [1.833 3.68]","-3.801 [-4.361 -2.586]","2.934 [2.356 3.926]" , "-3.64 [-4.329 -3.347]" , "-3.74 [-4.569 -3.505]","-4.211 [-4.687 -3.718]")
+
+pvalue=c(  "3.66e-05","6.01e-05","7.66e-05","6.1e-03" ,"3.66e-05","3.66e-05","3.66e-05")
+
+FDR=c( "6.40e-05","8.41e-05","8.93e-05","6.10e-03","6.40e-05","6.40e-05","6.40e-05")
+
+da=data.frame(Feature=Feature,MYC=MYC,WT=WT,'p-value'=pvalue,FDR=FDR,check.names = FALSE)
+  
+knitr::kable(da, align = "lcccc")
+```
+
+ \newpage
+
+We next build a heatmap of the metabolite belonging to the module 5.
+
+
+    sel=clu$clusters[,"Clusters 7"]==5
+    met.sel=met[sel,] 
+    my_sample_col <- data.frame(group = label,genotype=label_MYC)
+    row.names(my_sample_col) <- colnames(met)
+    oo=order(row.names(my_sample_col))
+    my_sample_col=my_sample_col[oo,]
+    met.sel=met.sel[,oo]
+    hrow=hclust(dist(clu$visualization[sel,]),method="ward.D") 
+
+    pheatmap(met.sel,fontsize = 7,
+             cluster_cols = FALSE,
+             cluster_rows = hrow,
+             annotation_col = my_sample_col, 
+             annotation_colors = my_colour1,
+             color = colorRampPalette(rev(brewer.pal(n = 11, name ="RdBu")))(100))
+            
+\begin{figure}[h]
+  \centerline{\includegraphics[width=12cm]{KODAMAselection.pdf}}
+  \caption{Heatmap}
+  \label{fig:F6}
+\end{figure}
+
+
+
+
+ \newpage
+The function `readMet` connects R to the HMDB database^[https://www.hmdb.ca] to retrieve chemical and functional information of each metabolite. This can be summarized using different functions: `substituentsMet`, `diseaseMet`, `enzymeMet`, `pathwaysMet`, `taxonomyMet`. The function `features` associates the most prominent features to each module.
+
+In this example, we characterized the modules by functional group.
+
+    doc=readMet(HFD$HMDB)
+    cla=substituentsMet(doc)
+    f=features(doc,cla,clu$clusters[,"Clusters 7"])
+
+Fisher's test was used to rank the association of each module to the metabolite information. Below are reported the p-value for associations with the module 5. 
+
+    f[[5]]
+
+```{r, echo=FALSE, results='asis'}
+pval=c(2.41e-13,1.48e-11,1.40e-10,9.02e-09,7.67e-08,1.28e-05,2.53e-05,4.14e-05,4.79e-05,1.16e-04,3.24e-04,3.24e-04,3.24e-04,7.27e-04)
+nam=c( "Heteroaromatic compound","Azacycle",
+  "Aromatic heteromonocyclic compound","Imidazolyl carboxylic acid derivative",
+ "Aralkylamine","Azole",
+  "Benzenoid","Histidine or derivatives",
+  "Aromatic homomonocyclic compound","1-hydroxy-2-unsubstituted benzenoid",
+ "Indole","Pyrrole",
+ "Substituted pyrrole","Imidazole"  )
+da=data.frame(Substituents=nam,'p-value'=pval,check.names = FALSE)
+knitr::kable(da, align = "lc")
+```
+
+ \newpage
+
+## 8  How to Cite this Package
+
+Ebtesam Abdel-Shafy, Tadele Melak, David A. MacIntyre, Giorgia Zadra, Luiz F. Zerbini, Silvano Piazza, and Stefano Cacciatore 
+Publication in submission
+
+To obtain BibTex entries of the two references, you can enter the following into your R session to Bibtex `citation("MetChem")`.
+
+
+
+
+## 5  References
+
+
+Cacciatore S, Luchinat C, Tenori L. Knowledge discovery by accuracy maximization. \emph{Proc Natl Acad Sci USA} 2014; 111: 5117-22.
+
+Cacciatore S, Tenori L, Luchinat C, Bennett PR, MacIntyre DA (2017) KODAMA: an R package for knowledge discovery and data mining. \emph{Bioinformatics} 2017; 33(4): 621-623. 
+
+Labbé DP, Zadra G, Yang M, Reyes JM, Lin CY, Cacciatore S, Ebot EM, Creech AL, Giunchi F, Fiorentino M, Elfandy H, Syamala S, Karoly ED, Alshalalfa M, Erho N, Ross A, Schaeffer EM, Gibb EA, Takhar M, Den RB, Lehrer J, Karnes RJ, Freedland SJ, Davicioni E, Spratt DE, Ellis L, Jaffe JD, D'Amico AV, Kantoff PW, Bradner JE, Mucci LA, Chavarro JE, Loda M, Brown M. High-fat diet fuels prostate cancer progression by rewiring the metabolome and amplifying the MYC program. \emph{Nat Commun} 2019; 10: 4358.
+
+

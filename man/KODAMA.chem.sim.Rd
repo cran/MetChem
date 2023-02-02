@@ -58,7 +58,7 @@ Optional parameters for  \code{\link{hclust}} function.
 \donttest{
 data(Metabolites)
 
-res=KODAMA.chem.sim(Metabolites$SMILE)  
+res=KODAMA.chem.sim(Metabolites$SMILES)  
 plot(res$kodama$visualization)
 
 }

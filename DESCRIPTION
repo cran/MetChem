@@ -1,6 +1,6 @@
 Package: MetChem
-Version: 0.1
-Date: 2022-12-19
+Version: 0.2
+Date: 2023-02-01
 Authors@R: c(person("Ebtesam","Abdel-Shafy",role="aut"),
              person("Tadele","Melak",role="aut"),
              person("David A.","MacIntyre",role="aut"),
@@ -17,7 +17,7 @@ Suggests: knitr, rmarkdown, readxl, impute, pheatmap, RColorBrewer
 VignetteBuilder: knitr
 SuggestsNote: No suggestions
 License: GPL (>= 2)
-Packaged: 2022-12-20 08:20:37 UTC; stefano
+Packaged: 2023-02-01 07:26:50 UTC; stefano
 NeedsCompilation: no
 Repository: CRAN
 Author: Ebtesam Abdel-Shafy [aut],
@@ -27,4 +27,4 @@ Author: Ebtesam Abdel-Shafy [aut],
   Luiz F. Zerbini [aut],
   Silvano Piazza [aut],
   Stefano Cacciatore [aut, cre]
-Date/Publication: 2022-12-20 13:00:05 UTC
+Date/Publication: 2023-02-02 13:00:05 UTC

@@ -69,7 +69,7 @@ If verbose is TRUE, it displays the progress for each iteration.
 \donttest{
 data(Metabolites)
 
-res=modules.detection(Metabolites$SMILE) 
+res=modules.detection(Metabolites$SMILES) 
 
 }
 }

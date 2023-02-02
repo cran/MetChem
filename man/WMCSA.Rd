@@ -34,7 +34,7 @@ This function returns a matrix as output represent similarity score of metabolit
 
 data(Metabolites)
 
-res=KODAMA.chem.sim(Metabolites$SMILE)  
+res=KODAMA.chem.sim(Metabolites$SMILES)  
 clu=tree.cutting(res,max_nc = 30)
 plot(clu$min_nc:clu$max_nc,clu$res.S)
 ww=WMCSA(Metabolites$concentration,clu,20)

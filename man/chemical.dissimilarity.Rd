@@ -35,7 +35,7 @@ The type of fingerprint applied to the SMILEs ("extended" as default). For more 
 \examples{
 
 data(Metabolites)
-d=chemical.dissimilarity(Metabolites$SMILE[1:50])
+d=chemical.dissimilarity(Metabolites$SMILES[1:50])
 
 }
 

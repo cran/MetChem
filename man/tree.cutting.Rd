@@ -31,7 +31,7 @@ A list contains the calculation for each clustering of Rousseeuw's Silhouette in
 \donttest{
 data(Metabolites)
 
-res=KODAMA.chem.sim(Metabolites$SMILE)
+res=KODAMA.chem.sim(Metabolites$SMILES)
 clu=tree.cutting(res,max_nc = 30)
 plot(clu$min_nc:clu$max_nc,clu$res.S)
 

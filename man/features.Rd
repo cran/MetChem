@@ -27,7 +27,7 @@ features(doc,cla,clustering)
 \examples{
 \donttest{
 data(Metabolites)
-res=KODAMA.chem.sim(Metabolites$SMILE)
+res=KODAMA.chem.sim(Metabolites$SMILES)
 clu=tree.cutting(res,max_nc = 30)
 cla=substituentsMet(Metabolites$readMet)
 f=features(Metabolites$readMet,cla,clu$clusters[,"Clusters 23"])

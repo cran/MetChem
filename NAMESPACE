@@ -14,7 +14,7 @@ importFrom("KODAMA","KODAMA.matrix","KODAMA.visualization")
 
 exportPattern("KODAMA.chem.sim","tree.cutting","WMCSA", "readMet","clearMet","modules.detection",
               "nameMet","selectionMet","propertiesMet",  "substituentsMet", "taxonomyMet",
-              "diseasesMet", "enzymesMet", "pathwaysMet","chemical.dissimilarity","Metabolites",
+              "diseasesMet", "enzymesMet", "pathwaysMet","chemical.dissimilarity","Metabolites","ChemRICH",
               "features","write.cls","write.gct","write.gmt")
 
 

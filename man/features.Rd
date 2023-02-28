@@ -8,12 +8,13 @@ This function finds features associated with each cluster.
 }
 \usage{
 
-features(doc,cla,clustering)
+features(doc,cla,cl,HMDB_ID)
 }
 \arguments{
   \item{doc}{The output of the \code{\link{readMet}} function.}
   \item{cla}{The output of \code{\link{diseasesMet}}, \code{\link{enzymesMet}}, \code{\link{pathwaysMet}}, \code{\link{propertiesMet}}, \code{\link{substituentsMet}}, or \code{\link{taxonomyMet}}  functions.}
-  \item{clustering}{A clustering vector of the metabolites.}
+  \item{cl}{The output of the \code{\link{allbranches}} function  containing the module memberships.}
+  \item{HMDB_ID}{A vector of HMDB IDs associated with their chemical name.}
 }
 
 \value{
@@ -27,9 +28,13 @@ features(doc,cla,clustering)
 \examples{
 \donttest{
 data(Metabolites)
-res=KODAMA.chem.sim(Metabolites$SMILES)
-clu=tree.cutting(res,max_nc = 30)
+SMILES=Metabolites$SMILES
+names(SMILES)=Metabolites$name
+HMDB=Metabolites$HMDB
+names(HMDB)=Metabolites$name
+res=KODAMA.chem.sim(SMILES)
+cl=allbranches(res$hclust)
 cla=substituentsMet(Metabolites$readMet)
-f=features(Metabolites$readMet,cla,clu$clusters[,"Clusters 23"])
+f=features(Metabolites$readMet,cla,cl,HMDB)
 }
 }

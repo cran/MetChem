@@ -7,23 +7,19 @@ Weighted Metabolite Chemical Structural Analysis
 Summarize metabolites concetration in each of identified clusters using the module eigenvalue (eigen-metabolite) for calculating module membership measures. 
 }
 \usage{
-WMCSA(data,clu,nclusters)
+WMCSA(data,cl)
 }
 
 \arguments{
 \item{data}{
 dataset of different metabolite concentration in differnt samples.
   }
-\item{clu}{
-a list in the same format of the output of the function \code{\link{tree.cutting}} function. 
-}
-\item{nclusters}{
-number of clusters.
-}
+
+  \item{cl}{The output of the \code{\link{allbranches}} function  containing the module memberships.}
 }
 
 \value{
-This function returns a matrix as output represent similarity score of metabolites within the same cluster among different samples.
+This function returns a matrix as output represent similarity score of metabolites within the same module among different samples.
 
 }
 
@@ -34,10 +30,11 @@ This function returns a matrix as output represent similarity score of metabolit
 
 data(Metabolites)
 
-res=KODAMA.chem.sim(Metabolites$SMILES)  
-clu=tree.cutting(res,max_nc = 30)
-plot(clu$min_nc:clu$max_nc,clu$res.S)
-ww=WMCSA(Metabolites$concentration,clu,20)
+SMILES=Metabolites$SMILES
+names(SMILES)=Metabolites$name
+res=KODAMA.chem.sim(SMILES)  
+cl=allbranches(res$hclust)
+ww=WMCSA(Metabolites$concentration,cl)
 
 
 }

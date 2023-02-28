@@ -1,7 +1,7 @@
-\name{modules.detection}
-\alias{modules.detection}
+\name{clusters.detection}
+\alias{clusters.detection}
 \title{
-Detection of modules.
+Detection of clusters.
 }
 \description{
 This function calculates the structural similarity between different metabolites and perform hierarchical clustering using the KODAMA algorithm and detect the optimal number of clusters. The procedure is repeated to ensure the robustness of the detection.
@@ -9,10 +9,10 @@ This function calculates the structural similarity between different metabolites
 \usage{
 
 
-modules.detection  (smiles,
+clusters.detection  (smiles,
                      repetition=10,
                      k=50,
-                     seed=1234,
+                     seed=12345,
                      max_nc = 30,
                      dissimilarity.parameters=list(),
                      kodama.matrix.parameters=list(),
@@ -69,7 +69,7 @@ If verbose is TRUE, it displays the progress for each iteration.
 \donttest{
 data(Metabolites)
 
-res=modules.detection(Metabolites$SMILES) 
+res=clusters.detection(Metabolites$SMILES) 
 
 }
 }

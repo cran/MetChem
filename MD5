@@ -1,10 +1,10 @@
-adca8869f2395bca32be0d8e81c66031 *DESCRIPTION
+61f224d8b3d8e3e10613fdba22022945 *DESCRIPTION
 204aa13b88cbd98bb33f4f686a00b140 *NAMESPACE
 a63d198bdd0cda18ef379505d27e059b *R/Main.R
-6d262c22222417838da066bb6b38a13c *build/vignette.rds
-9047f20e7671322f50b2e47d2c588cf1 *data/ChemRICH.RData
-73b8f1c392f4aaade5535e3ec4a20872 *data/HFD.RData
-b1015b7c0ae56da3e5d9b33db1c7a34a *data/Metabolites.RData
+b37c343ceda535cbd42ce4bf61ee9bf4 *build/vignette.rds
+68d528e7f69fd22100c6d84f7b603667 *data/ChemRICH.RData
+4000350dbbd7009cdf3394748754c91e *data/HFD.RData
+ca2d902bff9dec87ab7c6b993d5c8657 *data/Metabolites.RData
 387c80f34c4686d44efccc75bb11d1ad *data/datalist
 351bf201d1443da5542630e0412fda2f *inst/doc/MetChem.R
 c09d6140d4f4a23076b7416b3bda1e24 *inst/doc/MetChem.Rmd
@@ -37,5 +37,5 @@ e9e320b149aee43a5950952536c513c4 *vignettes/KODAMAall.pdf
 cc1e44ac458cb4853d9457e4b06ff93b *vignettes/KODAMApaper.pdf
 64cf3767f0db11d92bda1bc87e4dfb41 *vignettes/KODAMAselection.pdf
 c09d6140d4f4a23076b7416b3bda1e24 *vignettes/MetChem.Rmd
-b8f72e34a603e256e415372f8835c6b3 *vignettes/MetChem.html
+e8f7ade006a2f592eee3582a0bc7b52b *vignettes/MetChem.html
 c684435ba2aff5656b66a1b1d9f04a6b *vignettes/heatmap.pdf

@@ -1,6 +1,6 @@
 Package: MetChem
-Version: 0.3
-Date: 2023-02-21
+Version: 0.4
+Date: 2023-07-05
 Authors@R: c(person("Ebtesam","Abdel-Shafy",role="aut"),
              person("Tadele","Melak",role="aut"),
              person("David A.","MacIntyre",role="aut"),
@@ -10,14 +10,14 @@ Authors@R: c(person("Ebtesam","Abdel-Shafy",role="aut"),
              person("Stefano","Cacciatore",email="tkcaccia@gmail.com",role=c("aut","cre")))
 Maintainer: Stefano Cacciatore <tkcaccia@gmail.com>
 Title: Chemical Structural Similarity Analysis
-Description: A new pipeline to explore chemical structural similarity across metabolite. It allows to classify metabolites in structurally-related modules and identify common shared functional groups. KODAMA algorithm is used to highlight structural similarity between metabolites. See Cacciatore S, Tenori L, Luchinat C, Bennett PR, MacIntyre DA. (2017) Bioinformatics <doi:10.1093/bioinformatics/btw705> and Cacciatore S, Luchinat C, Tenori L. (2014) Proc Natl Acad Sci USA <doi:10.1073/pnas.1220873111>.
+Description: A new pipeline to explore chemical structural similarity across metabolite. It allows to classify metabolites in structurally-related modules and identify common shared functional groups. KODAMA algorithm is used to highlight structural similarity between metabolites. See Cacciatore S, Tenori L, Luchinat C, Bennett PR, MacIntyre DA. (2017) Bioinformatics <doi:10.1093/bioinformatics/btw705>, Cacciatore S, Luchinat C, Tenori L. (2014) Proc Natl Acad Sci USA <doi:10.1073/pnas.1220873111>, and Abdel-Shafy EA, Melak T, MacIntyre DA, Zadra G, Zerbini LF, Piazza S, Cacciatore S. (2023) Bioinformatics Advances <doi:10.1093/bioadv/vbad053>.
 Depends: R (>= 3.5.0), stats, KODAMA (>= 2.3), httr, XML, fingerprint,
         rcdk (>= 3.4.3)
 Suggests: knitr, rmarkdown, readxl, impute, pheatmap, RColorBrewer
 VignetteBuilder: knitr
 SuggestsNote: No suggestions
 License: GPL (>= 2)
-Packaged: 2023-02-28 07:01:46 UTC; stefano
+Packaged: 2023-07-05 10:05:17 UTC; user
 NeedsCompilation: no
 Repository: CRAN
 Author: Ebtesam Abdel-Shafy [aut],
@@ -27,4 +27,4 @@ Author: Ebtesam Abdel-Shafy [aut],
   Luiz F. Zerbini [aut],
   Silvano Piazza [aut],
   Stefano Cacciatore [aut, cre]
-Date/Publication: 2023-02-28 07:22:30 UTC
+Date/Publication: 2023-07-06 07:43:05 UTC

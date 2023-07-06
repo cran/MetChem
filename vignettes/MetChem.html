@@ -3,105 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <title>A new pipeline to explore structural similarity across metabolite modules</title>
-
-
-
-
-
 <style type="text/css">
-body, td {
-  font-family: sans-serif;
-  background-color: white;
-  font-size: 13px;
-}
 body {
+  font-family: sans-serif;
   max-width: 800px;
   margin: auto;
   padding: 1em;
   line-height: 1.5;
   box-sizing: border-box;
 }
+body, .footnotes, code { font-size: .9em; }
+li li { font-size: .95em; }
 *, *:before, *:after {
   box-sizing: inherit;
 }
-tt, code, pre {
-  font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-a:visited { color: #80007f; }
 pre, img { max-width: 100%; }
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
+pre, pre:hover {
+  white-space: pre-wrap;
+  word-break: break-all;
 }
-code[class] { background-color: #F8F8F8; }
-code.language-undefined { background-color: inherit; }
+pre code {
+  display: block;
+  overflow-x: auto;
+}
+code { font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace; }
+:not(pre) > code, code[class] { background-color: #F8F8F8; }
+code.language-undefined, pre > code:not([class]) {
+  background-color: inherit;
+  border: 1px solid #eee;
+}
 table {
   margin: auto;
   border-top: 1px solid #666;
-  border-bottom: 1px solid #666;
 }
 table thead th { border-bottom: 1px solid #ddd; }
 th, td { padding: 5px; }
 thead, tfoot, tr:nth-child(even) { background: #eee; }
 blockquote {
-  color:#666;
-  margin:0;
+  color: #666;
+  margin: 0;
   padding-left: 1em;
-  border-left: 0.5em #eee solid;
+  border-left: 0.5em solid #eee;
 }
-hr { border: 1px #ddd dashed; }
+hr, .footnotes::before { border: 1px dashed #ddd; }
 .frontmatter { text-align: center; }
+#TOC .numbered li { list-style: none; }
+#TOC .numbered { padding-left: 0; }
+#TOC .numbered ul { padding-left: 1em; }
+table, .body h2 { border-bottom: 1px solid #666; }
+.body .appendix, .appendix ~ h2 { border-bottom-style: dashed; }
+.footnote-ref a::before { content: "["; }
+.footnote-ref a::after { content: "]"; }
+.footnotes::before {
+  content: "";
+  display: block;
+  max-width: 20em;
+}
 
 @media print {
-  * {
-    background: transparent !important;
-    color: black !important;
-    filter:none !important;
-  }
   body {
     font-size: 12pt;
     max-width: 100%;
   }
-  a, a:visited { text-decoration: underline; }
-  hr {
-    visibility: hidden;
-    page-break-before: always;
-  }
-  pre, blockquote {
-    padding-right: 1em;
-    page-break-inside: avoid;
-  }
   tr, img { page-break-inside: avoid; }
-  img { max-width: 100% !important; }
-  @page :left { margin: 15mm 20mm 15mm 10mm; }
-  @page :right { margin: 15mm 10mm 15mm 20mm; }
-  p, h2, h3 { orphans: 3; widows: 3; }
-  h2, h3 { page-break-after: avoid; }
+}
+@media only screen and (min-width: 992px) {
+  pre { white-space: pre; }
 }
 </style>
-
-
 </head>
-
 <body>
 <div class="include-before">
-
 </div>
-
 <div class="frontmatter">
 <div class="title"><h1>A new pipeline to explore structural similarity across metabolite modules</h1></div>
 <div class="author"><h2>| Ebtesam Abdel-Shafy, Tadele Melak, David A. MacIntyre,
 | Giorgia Zadra, Luiz F. Zerbini, Silvano Piazza, and Stefano Cacciatore</h2></div>
-<div class="date"><h3>2023-02-28</h3></div>
+<div class="date"><h3>2023-07-05</h3></div>
 </div>
-
 <div class="body">
-<h2>1  Introduction</h2>
+<h2 id="1-introduction">1  Introduction</h2>
 <p>MetChem is an R package used to perform structural and functional analysis of metabolites using a simple pipeline.</p>
-<h2>2	Installation</h2>
-<h3>2.1 Installation via CRAN</h3>
+<h2 id="2-installation">2	Installation</h2>
+<h3 id="2-1-installation-via-cran">2.1 Installation via CRAN</h3>
 <p>The R package MetChem (current version 0.2) is part of the Comprehensive R Archive Network (CRAN)^[https://cran.r-project.org/]. The simplest way to install the package is to enter the following command into your R session: <code>install.packages(&quot;MetChem&quot;)</code>. We suggest installing the following R packages: <code>pheatmap</code> and <code>RColorBrewer</code> to enable data visualization in heatmaps, <code>readxl</code> for the data reading of Excel files, and <code>impute</code> for the imputation of missing data.</p>
 <pre><code># To install the pheatmap package
 install.packages(&quot;pheatmap&quot;)
@@ -117,16 +102,16 @@ if (!require(&quot;BiocManager&quot;, quietly = TRUE))
     install.packages(&quot;BiocManager&quot;)
 BiocManager::install(&quot;impute&quot;)
 </code></pre>
-<h3>2.2 Manual installation from source</h3>
+<h3 id="2-2-manual-installation-from-source">2.2 Manual installation from source</h3>
 <p>The package can be manually installed from source by opening the package’s page in CRAN and then proceeding as follows:</p>
 <ul>
 <li>Download MetChem.tar.gz and save it to your hard disk</li>
 <li>Open a shell/terminal/command prompt window and change to the desired directory for installation of MetChem.tar.gz. Enter <code>R CMD INSTALL MetChem.tar.gz</code> to install the package.
 Note that this may require additional software on some platforms. Windows requires Rtools^[https://developer.apple.com/xcode/] to be installed and to be available in the default search path (environment variable PATH). MAC OS X requires installation of Xcode developers and command line tools.</li>
 </ul>
-<h3>2.3 Compatibility issues</h3>
+<h3 id="2-3-compatibility-issues">2.3 Compatibility issues</h3>
 <p>The package downloadable from CRAN was built using R version, R.4.2.1. The package should work without major issues on R versions &gt; 3.5.0 and KODAMA package &gt;= 2.3.</p>
-<h2>3  Getting Started</h2>
+<h2 id="3-getting-started">3  Getting Started</h2>
 <p>The R package MetChem depends by the R package rcdk, which is partially implemented in Java. In Windows environment, we reported an issue related to the uploading of rcdk package. It can be solved running the following code before loading the package MetChem.</p>
 <pre><code>replacement &lt;- function(category = &quot;LC_ALL&quot;) {
   if (identical(category, &quot;LC_MESSAGES&quot;))
@@ -149,7 +134,7 @@ lockBinding(&quot;Sys.getlocale&quot;, base)
 <p>If this command terminates without any error messages, the package is installed successfully. The MetChem package is now ready for use.</p>
 <p>The package includes both a user manual (this document) and a reference manual (help pages for each function). To view the user manual, enter <code>vignette(&quot;MetChem&quot;)</code>. Help pages can be viewed using the command <code>help(package=&quot;MetChem&quot;)</code>.</p>
 <p>\newpage</p>
-<h2>4  Example 1: murine prostate tissues metabolic profile</h2>
+<h2 id="4-example-1-murine-prostate-tissues-metabolic-profile">4  Example 1: murine prostate tissues metabolic profile</h2>
 <p>Here, we introduce an example for the analysis of metabolic structural information using MetChem package. For this, we used a data set of mass spectrometry dataset obtained from murine prostate tissue samples reported by Labbé and Zadra \emph{et al.} (2019) (Supplementary Data 2). The metabolic data are obtained from ventral prostate tissues of mice that overexpress a human c-MYC transgene (MYC) in the prostate epithelium and wild-type littermates (WT). Mice were fed either a high fat diet (HFD; 60% kcal from fat; lard—rich in saturated fat) or a control diet (CTD; 10% kcal from fat). The data set includes six replicates for each group (\emph{i.e.}, WT_CTD, MYC_CTD, WT_HFD, and MYC_HFD). To begin, download the data from the Labbé and Zadra (2019) study. Download it and save it to your hard disk.
 Metabolomic data is extracted using the instructions below. Data is then imputed using a k-nearest neighbour (kNN) algorithm using the function <code>impute</code> as described in the publication.</p>
 <pre><code>require(&quot;readxl&quot;)
@@ -581,26 +566,17 @@ enzymes=features(doc,cla2,cl)
 </tr>
 </tbody>
 </table>
-<h2>4  How to Cite this Package</h2>
+<h2 id="4-how-to-cite-this-package">4  How to Cite this Package</h2>
 <p>Ebtesam Abdel-Shafy, Tadele Melak, David A. MacIntyre, Giorgia Zadra, Luiz F. Zerbini, Silvano Piazza, and Stefano Cacciatore
 Publication in submission</p>
 <p>To obtain BibTex entries of the two references, you can enter the following into your R session to Bibtex <code>citation(&quot;MetChem&quot;)</code>.</p>
-<h2>5  References</h2>
+<h2 id="5-references">5  References</h2>
 <p>Cacciatore S, Luchinat C, Tenori L. Knowledge discovery by accuracy maximization. \emph{Proc Natl Acad Sci USA} 2014; 111: 5117-22.</p>
 <p>Cacciatore S, Tenori L, Luchinat C, Bennett PR, MacIntyre DA (2017) KODAMA: an R package for knowledge discovery and data mining. \emph{Bioinformatics} 2017; 33(4): 621-623.</p>
 <p>Labbé DP, Zadra G, Yang M, Reyes JM, Lin CY, Cacciatore S, Ebot EM, Creech AL, Giunchi F, Fiorentino M, Elfandy H, Syamala S, Karoly ED, Alshalalfa M, Erho N, Ross A, Schaeffer EM, Gibb EA, Takhar M, Den RB, Lehrer J, Karnes RJ, Freedland SJ, Davicioni E, Spratt DE, Ellis L, Jaffe JD, D’Amico AV, Kantoff PW, Bradner JE, Mucci LA, Chavarro JE, Loda M, Brown M. High-fat diet fuels prostate cancer progression by rewiring the metabolome and amplifying the MYC program. \emph{Nat Commun} 2019; 10: 4358.</p>
 <p>Zinga MM, Abdel-Shafy E, Melak T, Vignoli A, Piazza S, Zerbini LF, Tenori L, Cacciatore S. KODAMA exploratory analysis in metabolic phenotyping. \emph{Front Mol Biosci} 2023; 9: 1436.</p>
-
 </div>
-
 <div class="include-after">
-
 </div>
-
-<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/center-img.min.js" async></script>
-<script>
-
-</script>
 </body>
-
 </html>
